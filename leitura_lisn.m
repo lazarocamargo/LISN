@@ -1,14 +1,33 @@
+% programa para ler dados dos LISN (extensao .S4) e 
+% plotar todos os PRN
+% DAE/CEA - INPE - Sao Jose dos Campos
+
+% revisao
+% 30/11/2017 - ler dois arquivos em sequencia, e processar - Lazaro Camargo
+
+
+% formato de entrada
+% yy | Day_of_year | Seconds | Number_Records | 1o_PRN | 1o_S4 | 1o_Az |
+% 1o_Elev | 2o PRN | ...
+
+
+% formato da saida:
+% yy | Day_of_year | time | PRN | S4 | Az | Elev
+
 clear saida;
 clear all
 
 saida3 = [];
 
+
+% le o primeiro arquivo
 [arquivo,caminho] = uigetfile('*.s4');
 
 arquivo_completo1 =fullfile(caminho,arquivo);
 
 CP1 = dlmread(arquivo_completo1);
 
+% le o segundo arquivo
 [arquivo,caminho] = uigetfile('*.s4');
 
 arquivo_completo2 =fullfile(caminho,arquivo);
@@ -19,30 +38,23 @@ CP = cat(1,CP1,CP2)
 
 for m=1:length(CP)
 
-
-
-
-    teste1 = CP(m,:);
+    teste1 = CP(m,:);           %processa linha por linha
 
     saida = [];
-    saida2 = zeros(1,4);
     saida2 = [];
     
-    time = (teste1(3))/3600;
+    time = (teste1(3))/3600;    %converte para horas
     
     j = 0;
     i = 1;
 
-    for k=1:teste1(4)
-    
-    
-    
-    
+    for k=1:teste1(4)           %teste1(4) = Number_Records
    
-        saida(i) =   teste1(4+j+1);
-        saida(i+1) = teste1(4+j+2);
-        saida(i+2) = teste1(4+j+3);
-        saida(i+3) = teste1(4+j+4);
+            
+        saida(i) =   teste1(4+j+1);     % PRN
+        saida(i+1) = teste1(4+j+2);     % S4
+        saida(i+2) = teste1(4+j+3);     % Az
+        saida(i+3) = teste1(4+j+4);     % Elev
    
         saida2 = cat(1,saida2,[teste1(1) teste1(2) time saida(i) saida(i+1) saida(i+2) saida(i+3)]);
    
@@ -50,7 +62,7 @@ for m=1:length(CP)
         j = j + 4;
     end
 
-    saida3 = cat(1,saida3,saida2);
+    saida3 = cat(1,saida3,saida2);  %empilha linha por linha
 end
 
 saida2
@@ -129,6 +141,7 @@ axis off;
 text(0, 1.00, arquivo, 'FontName' , 'Arial', 'FontSize', 12, 'VerticalAlignment', 'Top');
 text(0, 0.75, 'LISN', 'FontName' , 'Arial', 'FontSize', 12, 'VerticalAlignment', 'Top');
 text(0, 0.55, '', 'FontName' , 'Arial', 'FontSize', 12, 'VerticalAlignment', 'Top');
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%% Geracao dos 31 plots %%%%%%%%%%%%%%%%%%%%%%%%%%
